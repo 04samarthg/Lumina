@@ -1,11 +1,11 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormFeild from "../../components/FormFeild";
 import CustomButton from "../../components/CustomButton";
-import { Link } from "expo-router";
-import { createUser } from "../../lib/appwrite";
+import { Link, router } from "expo-router";
+import { signUp } from "../../lib/appwrite.js"
 
 const SignUp = () => {
   const [form, setForm] = React.useState({
@@ -15,20 +15,23 @@ const SignUp = () => {
   });
   const [loading, setLoading] = React.useState(false);
 
-  // Updated submit function with more logs
   const submit = async () => {
-    console.log("Submit function triggered"); // To ensure this function runs
-    setLoading(true); // Start loading
-
-    try {
-      console.log("Calling createUser with:", form.username, form.email, form.password);
-      await createUser(form.username, form.email, form.password); // Pass form data to createUser
-      console.log("User created successfully!");
-      setLoading(false); // Stop loading after success
-    } catch (error) {
-      console.log("Error signing up:", error); // Log any errors
-      setLoading(false); // Stop loading after error
+    if(!form.username || !form.email || !form.password){
+      Alert.alert('Error' ,"Please fill all the fields")
     }
+
+    setLoading(true)
+    try {
+      const result = await signUp(form.email, form.password, form.username)
+
+      router.replace('/home')
+
+    } catch (error) {
+      Alert.alert('Error', error.message)      
+    } finally{
+      setLoading(false)
+    }
+
   };
 
   return (
@@ -69,10 +72,10 @@ const SignUp = () => {
           />
 
           <CustomButton
-            title={loading ? "Signing Up..." : "Sign Up"} // Dynamic button text
-            handlePress={submit}
+            title={loading ? "Signing Up..." : "Sign Up"} 
+            handlepress={submit}
             containerStyles="mt-7"
-            isLoading={loading} // Loading state
+            isLoading={loading} 
           />
 
           <View className="justify-center flex-row pt-5">

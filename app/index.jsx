@@ -3,10 +3,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../constants";
 import CustomButton from "../components/CustomButton";
 import { StatusBar } from "expo-status-bar";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import 'react-native-url-polyfill/auto'
+import { useGlobalContext } from "../context/GlobalProvider";
 
 export default function App() {
+
+  const {isLoading, isLoggedIn} = useGlobalContext();
+
+  if(!isLoading && isLoggedIn){
+    return <Redirect href="/home" />
+  }
+  
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
@@ -36,7 +44,7 @@ export default function App() {
               className="w-[155px] h-[15px] relative bottom-2 -right-10"
               resizeMode="contain"
             />
-          </View>
+  </View>
           <Text className="text-sm font-pregular text-gray-100 mt-3 text-center">
             Where creativity meets innovation: embark on a journey of limitless
             exploration with Lumina
