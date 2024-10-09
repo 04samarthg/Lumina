@@ -18,11 +18,11 @@ const FormFeild = ({
 
       <View className="border-2 border-black-200 flex-row w-full h-14 px-4 bg-black-100 rounded-2xl focus:border-secondary items-center">
         <TextInput
-          className="flex-1 text-white font-psemibold text-base"
+          className="flex-1 text-white font-psemibold"
           value={value}
           placeholder={placeholder}
           onChangeText={handleChangeText}
-          placeholderTxtColor="#7b7b8b"
+          placeholderTextColor="#7b7b8b"
           secureTextEntry={title === "Password" && !showPassword}
         />
 

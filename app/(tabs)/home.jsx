@@ -1,4 +1,11 @@
-import { View, Text, FlatList, Image, RefreshControl, Alert } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  RefreshControl,
+  Alert,
+} from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
@@ -7,27 +14,36 @@ import Trending from "../../components/Trending";
 import EmptyState from "../../components/EmptyState";
 import { getAllPosts, getLatestPosts } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
+import VedioCard from "../../components/VedioCard";
 
 const Home = () => {
-
-  const { data: posts, refetch } = useAppwrite(getAllPosts)
-  const { data: latestPosts } = useAppwrite(getLatestPosts)
+  const { data: posts, refetch: refreshAll } = useAppwrite(getAllPosts);
+  const { data: latestPosts, refetch: refreshLatest } = useAppwrite(getLatestPosts);
+  const { user } = useGlobalContext();
 
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await refetch()
+    await refreshAll();
+    await refreshLatest();
     setRefreshing(false);
-  }
+  };
 
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
-        data={[]}
+        data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard vedio={item} />
+          <VedioCard
+            title={item.title}
+            thumbnail={item.thumbnail}
+            video={item.video}
+            creator={item.creator.username}
+            avatar={item.creator.avatar}
+          />
         )}
         ListHeaderComponent={() => (
           <View className="my-6 px-4 space-y-6">
@@ -37,8 +53,8 @@ const Home = () => {
                   {" "}
                   Welcome Back,
                 </Text>
-                <Text className="text-2xl font-psemibold text-white">
-                  UserName
+                <Text className="text-2xl text-center font-psemibold text-white">
+                  {user?.username}
                 </Text>
               </View>
               <View className="mt-1.5">
@@ -65,7 +81,9 @@ const Home = () => {
             subtitle="Be the first to upload a video"
           />
         )}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </SafeAreaView>
   );

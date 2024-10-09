@@ -13,11 +13,11 @@ import { ResizeMode, Video } from "expo-av";
 
 const zoomIn = {
   0: { scale: 0.9 },
-  1: { scale: 1.1 },
+  1: { scale: 1 },
 };
 
 const zoomOut = {
-  0: { scale: 1.1 },
+  0: { scale: 1 },
   1: { scale: 0.9 },
 };
 
@@ -33,7 +33,7 @@ const TrendingItem = ({ activeItem, item }) => {
       {play ? (
         <Video
           source={{ uri: item.video }}
-          className="bg-white/10 w-52 h-72 rounded-[35px] mt-3"
+          className="bg-white/10 w-48 h-65 rounded-[35px] mt-3"
           resizeMode={ResizeMode.CONTAIN}
           useNativeControls
           shouldPlay
